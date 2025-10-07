@@ -1,0 +1,1 @@
+"""Logger de actividad sencillo."""

@@ -1,0 +1,6 @@
+bcrypt
+PyQt6
+pytest
+black
+flake8
+mypy
