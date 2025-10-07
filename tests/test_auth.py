@@ -6,15 +6,13 @@ from app.application.services.auth_service import AuthService
 bcrypt = pytest.importorskip("bcrypt")  # skip tests if bcrypt not installed
 
 
-def test_create_and_authenticate_user():
+def test_create_and_authenticate_user() -> None:  # ← Añadido "-> None"
     conn = sqlite3.connect(":memory:")
     repo = SQLiteUserRepository(connection=conn)
     repo.create_tables()
 
     auth = AuthService(repo)
-    user = auth.create_user(
-        name="Test User", username="testuser", password="secret123", role="usuario"
-    )
+    user = auth.create_user(name="Test User", username="testuser", password="secret123", role="usuario")
     assert user.id is not None
 
     found = auth.authenticate("testuser", "secret123")
@@ -22,7 +20,7 @@ def test_create_and_authenticate_user():
     assert found.username == "testuser"
 
 
-def test_duplicate_username_raises():
+def test_duplicate_username_raises() -> None:  # ← Añadido "-> None"
     conn = sqlite3.connect(":memory:")
     repo = SQLiteUserRepository(connection=conn)
     repo.create_tables()
