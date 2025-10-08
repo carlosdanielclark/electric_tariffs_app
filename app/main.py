@@ -1,54 +1,63 @@
-"""Punto de entrada mínimo para la aplicación - Fase 1."""
-
 from __future__ import annotations
-import argparse
+import sys
 from app.infrastructure.database.connection import init_db
-from app.infrastructure.repositories.sqlite_user_repository import SQLiteUserRepository
-from app.application.services.auth_service import AuthService
-from app.infrastructure.logger.activity_logger import ActivityLogger
 
 
-def main() -> None:  # ← Añadido "-> None"
+def main_cli() -> None:
+    import argparse
+    from app.infrastructure.repositories.sqlite_user_repository import SQLiteUserRepository
+    from app.application.services.auth_service import AuthService
+
     parser = argparse.ArgumentParser(
-        prog="electric_app", description="Gestor de lecturas eléctricas - Fase 1"
+        prog="electric_app",
+        description="Gestor de lecturas eléctricas - Fase 1/2/3"
     )
     parser.add_argument(
         "command",
-        choices=["init-db", "create-admin", "help"],
+        choices=["init-db", "create-admin", "gui"],
         nargs="?",
-        default="help",
+        default="gui"
     )
-    parser.add_argument("--username", "-u", help="Username del admin a crear")
-    parser.add_argument(
-        "--password", "-p", help="Password del admin a crear (inseguro en CLI)"
-    )
+    parser.add_argument("--username", "-u")
+    parser.add_argument("--password", "-p")
     args = parser.parse_args()
 
     if args.command == "init-db":
         init_db()
-        print("Base de datos inicializada.")
+        print("DB inicializada.")
     elif args.command == "create-admin":
         repo = SQLiteUserRepository()
         auth = AuthService(repo)
         username = args.username or input("Admin username: ")
         password = args.password or input("Admin password: ")
-        try:
-            user = auth.create_user(
-                name="Administrador", username=username, password=password, role="admin"
-            )
-            ActivityLogger().log_event(
-                user.id, "create_admin", f"Admin {username} creado"
-            )
-            print(f"Admin creado: id={user.id} username={user.username}")
-        except Exception as e:
-            print(f"Error creando admin: {e}")
-    else:
-        print("Uso: ")
-        print("  python -m app.main init-db         -> inicializar la base de datos")
-        print(
-            "  python -m app.main create-admin    -> crear usuario admin (pide username/password)"
-        )
+        auth.create_user(name="Administrador", username=username, password=password, role="admin")
+        print("Admin creado.")
+    elif args.command == "gui":
+        main_gui()
+
+
+def main_gui() -> None:
+    try:
+        from PyQt6.QtWidgets import QApplication
+        from app.ui.main_window import MainWindow
+    except Exception as e:
+        print("No se pudo iniciar la GUI. Asegúrate de tener PyQt6 y matplotlib instalados.", e)
+        sys.exit(1)
+
+    app = QApplication(sys.argv)
+    try:
+        from pathlib import Path
+        style_path = Path(__file__).resolve().parent / "ui" / "resources" / "style.qss"
+        if style_path.exists():
+            with open(style_path, "r", encoding="utf-8") as f:
+                app.setStyleSheet(f.read())
+    except Exception:
+        pass
+
+    win = MainWindow()
+    win.show()
+    sys.exit(app.exec())
 
 
 if __name__ == "__main__":
-    main()  # ← Esto ya está bien, pero ahora `main` tiene tipo, así que no da error
+    main_cli()

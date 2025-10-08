@@ -24,8 +24,8 @@ class TariffCalculator:
         impuesto: Decimal | float = Decimal("0.0"),
     ):
         self.tramos = tramos or [
-            (Decimal("100.0"), Decimal("0.10")),
-            (Decimal("200.0"), Decimal("0.15")),
+            (Decimal("100.0"), Decimal("0.40")),
+            (Decimal("150.0"), Decimal("1.30")),
             (None, Decimal("0.20")),
         ]
         self.cargo_fijo = _to_decimal(cargo_fijo)
