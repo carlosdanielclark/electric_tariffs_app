@@ -51,6 +51,7 @@ class SQLiteUserRepository:
             )
             conn.commit()
             user_id = cur.lastrowid
+            assert user_id is not None, "Usuario insertado pero lastrowid es None (esto no debería ocurrir)"
             return User(
                 id=user_id,
                 name=name,

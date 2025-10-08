@@ -12,8 +12,10 @@ def test_create_and_authenticate_user() -> None:  # ← Añadido "-> None"
     repo.create_tables()
 
     auth = AuthService(repo)
-    user = auth.create_user(name="Test User", username="testuser", password="secret123", role="usuario")
-    assert user.id is not None
+    user = auth.create_user(
+        name="Test User", username="testuser", password="secret123", role="usuario"
+    )
+    assert user.id
 
     found = auth.authenticate("testuser", "secret123")
     assert found is not None
