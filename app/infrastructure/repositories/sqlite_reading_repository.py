@@ -1,16 +1,15 @@
 from __future__ import annotations
 import sqlite3
-from typing import List
 from datetime import datetime
+from decimal import Decimal
+from typing import List
 from app.domain.entities.reading import Reading
 from app.infrastructure.database.connection import get_connection
 from app.config import settings
 
 
 class SQLiteReadingRepository:
-    def __init__(
-        self, db_path: str | None = None, connection: sqlite3.Connection | None = None
-    ):
+    def __init__(self, db_path: str | None = None, connection: sqlite3.Connection | None = None):
         self._db_path = db_path or settings.DB_PATH
         self._conn = connection
 
@@ -22,8 +21,7 @@ class SQLiteReadingRepository:
     def create_tables(self) -> None:
         conn = self._get_conn()
         cur = conn.cursor()
-        cur.execute(
-            """
+        cur.execute("""
         CREATE TABLE IF NOT EXISTS lecturas (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             usuario_id INTEGER NOT NULL,
@@ -34,31 +32,35 @@ class SQLiteReadingRepository:
             fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE
         );
-        """
-        )
+        """)
         conn.commit()
 
     def add_reading(
         self,
         user_id: int,
-        lectura_actual: float,
-        lectura_anterior: float,
-        consumo: float,
-        costo: float,
+        lectura_actual: Decimal,
+        lectura_anterior: Decimal,
+        consumo: Decimal,
+        costo: Decimal,
     ) -> Reading:
         conn = self._get_conn()
         cur = conn.cursor()
         cur.execute(
             "INSERT INTO lecturas (usuario_id, lectura_actual, lectura_anterior, consumo, costo) VALUES (?, ?, ?, ?, ?)",
-            (user_id, lectura_actual, lectura_anterior, consumo, costo),
+            (
+                user_id,
+                float(lectura_actual),
+                float(lectura_anterior),
+                float(consumo),
+                float(costo),
+            ),
         )
         conn.commit()
         rowid = cur.lastrowid
         cur.execute("SELECT fecha FROM lecturas WHERE id = ?", (rowid,))
         fecha_row = cur.fetchone()
-        fecha = (
-            datetime.fromisoformat(fecha_row[0]) if fecha_row and fecha_row[0] else None
-        )
+        # SQLite almacena fecha como ISO string; convertimos a datetime
+        fecha = datetime.fromisoformat(fecha_row[0]) if fecha_row and fecha_row[0] else None
         return Reading(
             id=rowid,
             user_id=user_id,
@@ -79,17 +81,17 @@ class SQLiteReadingRepository:
         rows = cur.fetchall()
         results: List[Reading] = []
         for r in rows:
-            id_, usuario_id, lectura_actual, lectura_anterior, consumo, costo, fecha = r
-            fecha_dt = datetime.fromisoformat(fecha) if fecha else None
+            id_, usuario_id, la, lan, cons, cost, fecha_str = r
+            fecha = datetime.fromisoformat(fecha_str) if fecha_str else None
             results.append(
                 Reading(
                     id=id_,
                     user_id=usuario_id,
-                    lectura_actual=lectura_actual,
-                    lectura_anterior=lectura_anterior,
-                    consumo=consumo,
-                    costo=costo,
-                    fecha=fecha_dt,
+                    lectura_actual=Decimal(str(la)),
+                    lectura_anterior=Decimal(str(lan)),
+                    consumo=Decimal(str(cons)),
+                    costo=Decimal(str(cost)),
+                    fecha=fecha,
                 )
             )
         return results

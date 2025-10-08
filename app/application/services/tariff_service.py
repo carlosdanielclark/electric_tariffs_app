@@ -1,5 +1,10 @@
 from __future__ import annotations
+from decimal import Decimal, ROUND_HALF_UP
 from typing import Dict, List, Tuple
+
+
+def _to_decimal(value: float | Decimal) -> Decimal:
+    return Decimal(str(value)) if isinstance(value, float) else value
 
 
 class TariffCalculator:
@@ -9,56 +14,51 @@ class TariffCalculator:
       - cargo_fijo: monto fijo por periodo
       - tramos: lista de (limite_kwh, precio_por_kwh)
         El último tramo puede tener limite None (infinito)
-      - impuesto: porcentaje (ej. 0.13 para 13% IVA)
+      - impuesto: porcentaje (ej. Decimal('0.13') para 13% IVA)
     """
 
     def __init__(
         self,
-        tramos: List[Tuple[float | None, float]] | None = None,
-        cargo_fijo: float = 0.0,
-        impuesto: float = 0.0,
+        tramos: List[Tuple[Decimal | None, Decimal]] | None = None,
+        cargo_fijo: Decimal | float = Decimal("0.0"),
+        impuesto: Decimal | float = Decimal("0.0"),
     ):
-        self.tramos = tramos or [(100.0, 0.10), (200.0, 0.15), (None, 0.20)]
-        self.cargo_fijo = float(cargo_fijo)
-        self.impuesto = float(impuesto)
+        self.tramos = tramos or [
+            (Decimal("100.0"), Decimal("0.10")),
+            (Decimal("200.0"), Decimal("0.15")),
+            (None, Decimal("0.20")),
+        ]
+        self.cargo_fijo = _to_decimal(cargo_fijo)
+        self.impuesto = _to_decimal(impuesto)
 
-    def calculate(self, consumo_kwh: float) -> Dict[str, float]:
-        """
-        Retorna desglose:
-          - consumo: consumo_kwh
-          - subtotal_energia: costo sin cargo fijo ni impuesto
-          - cargo_fijo
-          - impuesto
-          - total
-        """
-        if consumo_kwh < 0:
+    def calculate(self, consumo_kwh: Decimal | float) -> Dict[str, Decimal]:
+        consumo = _to_decimal(consumo_kwh)
+        if consumo < 0:
             raise ValueError("Consumo no puede ser negativo")
 
-        remaining = consumo_kwh
-        last_limit = 0.0
-        subtotal = 0.0
+        remaining = consumo
+        last_limit = Decimal("0.0")
+        subtotal = Decimal("0.0")
 
         for limit, price in self.tramos:
             if limit is None:
                 qty = remaining
             else:
-                qty = max(0.0, min(remaining, max(0.0, limit - last_limit)))
+                qty = max(Decimal("0.0"), min(remaining, max(Decimal("0.0"), limit - last_limit)))
             subtotal += qty * price
             remaining -= qty
             last_limit = limit if limit is not None else last_limit
             if remaining <= 0:
                 break
 
-        subtotal = round(subtotal, 6)
-        cargo_fijo = round(self.cargo_fijo, 6)
-        base = subtotal + cargo_fijo
-        impuesto_monto = round(base * float(self.impuesto), 6)
-        total = round(base + impuesto_monto, 6)
+        base = subtotal + self.cargo_fijo
+        impuesto_monto = (base * self.impuesto).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        total = (base + impuesto_monto).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
         return {
-            "consumo": float(consumo_kwh),
+            "consumo": consumo,
             "subtotal_energia": subtotal,
-            "cargo_fijo": cargo_fijo,
+            "cargo_fijo": self.cargo_fijo,
             "impuesto": impuesto_monto,
             "total": total,
         }

@@ -1,27 +1,25 @@
+from decimal import Decimal
 from app.application.services.tariff_service import TariffCalculator
 
-
-def test_tariff_basic() -> None:  # ← Añadido
+def test_tariff_basic() -> None:
     calc = TariffCalculator()
-    res = calc.calculate(50)
-    assert res["consumo"] == 50.0
-    assert abs(res["subtotal_energia"] - 5.0) < 1e-6
-    assert res["cargo_fijo"] == 0.0
-    assert res["impuesto"] == 0.0
-    assert abs(res["total"] - 5.0) < 1e-6
+    res = calc.calculate(Decimal("50"))
+    assert res["consumo"] == Decimal("50")
+    assert res["subtotal_energia"] == Decimal("5.0")
+    assert res["cargo_fijo"] == Decimal("0.0")
+    assert res["impuesto"] == Decimal("0.0")
+    assert res["total"] == Decimal("5.0")
 
-
-def test_tariff_multi_tramos() -> None:  # ← Añadido
+def test_tariff_multi_tramos() -> None:
     calc = TariffCalculator()
-    res = calc.calculate(150)
-    assert abs(res["subtotal_energia"] - 17.5) < 1e-6
-    assert abs(res["total"] - 17.5) < 1e-6
+    res = calc.calculate(Decimal("150"))
+    assert res["subtotal_energia"] == Decimal("17.5")
+    assert res["total"] == Decimal("17.5")
 
-
-def test_tariff_with_cargo_e_impuesto() -> None:  # ← Añadido
-    calc = TariffCalculator(cargo_fijo=2.0, impuesto=0.1)
-    res = calc.calculate(100)
-    assert abs(res["subtotal_energia"] - 10.0) < 1e-6
-    assert abs(res["cargo_fijo"] - 2.0) < 1e-6
-    assert abs(res["impuesto"] - 1.2) < 1e-6
-    assert abs(res["total"] - 13.2) < 1e-6
+def test_tariff_with_cargo_e_impuesto() -> None:
+    calc = TariffCalculator(cargo_fijo=Decimal("2.0"), impuesto=Decimal("0.1"))
+    res = calc.calculate(Decimal("100"))
+    assert res["subtotal_energia"] == Decimal("10.0")
+    assert res["cargo_fijo"] == Decimal("2.0")
+    assert res["impuesto"] == Decimal("1.2")
+    assert res["total"] == Decimal("13.2")
