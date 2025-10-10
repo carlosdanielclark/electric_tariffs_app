@@ -1,9 +1,8 @@
 from PyQt6.QtWidgets import (
-    QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton,
-    QWidget, QHBoxLayout, QSpacerItem, QSizePolicy
+    QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QWidget
 )
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPixmap, QFont
+from PyQt6.QtGui import QPixmap
 from pathlib import Path
 
 
@@ -29,9 +28,12 @@ class LoginView(QDialog):
         QLineEdit {
             padding: 12px;
             font-size: 16px;
-            border: 1px solid #ccc;
+            border: 1px solid #999999;
             border-radius: 8px;
             background: white;
+            color: #333333;               /* ✅ Texto visible */
+            selection-background-color: #00C8D6;
+            selection-color: white;
         }
         QPushButton {
             padding: 12px;
@@ -49,6 +51,7 @@ class LoginView(QDialog):
             background-color: white;
             border-radius: 16px;
             padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         """
 
@@ -56,7 +59,8 @@ class LoginView(QDialog):
         main_layout = QVBoxLayout()
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        icon_path = Path(__file__).parent.parent.parent / "assets" / "app_icon.png"
+        # Icono de la app
+        icon_path = Path("assets") / "app_icon.png"
         if icon_path.exists():
             icon_label = QLabel()
             pixmap = QPixmap(str(icon_path)).scaled(
@@ -73,6 +77,7 @@ class LoginView(QDialog):
         welcome_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(welcome_label)
 
+        # Formulario
         form_container = QWidget()
         form_container.setObjectName("form_container")
         form_layout = QVBoxLayout(form_container)
@@ -80,9 +85,12 @@ class LoginView(QDialog):
 
         self.username_input = QLineEdit()
         self.username_input.setPlaceholderText("Usuario")
+        self.username_input.setStyleSheet("color: #333333;")  # Fallback
+
         self.password_input = QLineEdit()
         self.password_input.setPlaceholderText("Contraseña")
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
+        self.password_input.setStyleSheet("color: #333333;")  # Fallback
 
         self.login_button = QPushButton("Iniciar Sesión")
         self.login_button.clicked.connect(self.accept)
