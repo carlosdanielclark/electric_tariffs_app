@@ -1,10 +1,11 @@
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton,
-    QGraphicsBlurEffect, QWidget, QHBoxLayout, QSpacerItem, QSizePolicy
+    QWidget, QHBoxLayout, QSpacerItem, QSizePolicy
 )
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap, QFont
 from pathlib import Path
+
 
 class LoginView(QDialog):
     def __init__(self) -> None:
@@ -53,23 +54,25 @@ class LoginView(QDialog):
 
     def setup_ui(self) -> None:
         main_layout = QVBoxLayout()
-        main_layout.setAlignment(Qt.AlignCenter)
+        main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        # Imagen de la app
         icon_path = Path(__file__).parent.parent.parent / "assets" / "app_icon.png"
         if icon_path.exists():
             icon_label = QLabel()
-            pixmap = QPixmap(str(icon_path)).scaled(80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            pixmap = QPixmap(str(icon_path)).scaled(
+                80, 80,
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation
+            )
             icon_label.setPixmap(pixmap)
-            icon_label.setAlignment(Qt.AlignCenter)
+            icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             main_layout.addWidget(icon_label)
 
         welcome_label = QLabel("Bienvenido")
         welcome_label.setObjectName("welcome")
-        welcome_label.setAlignment(Qt.AlignCenter)
+        welcome_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(welcome_label)
 
-        # Formulario en contenedor con estilo Bento
         form_container = QWidget()
         form_container.setObjectName("form_container")
         form_layout = QVBoxLayout(form_container)
@@ -79,9 +82,10 @@ class LoginView(QDialog):
         self.username_input.setPlaceholderText("Usuario")
         self.password_input = QLineEdit()
         self.password_input.setPlaceholderText("Contraseña")
-        self.password_input.setEchoMode(QLineEdit.Password)
+        self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
 
         self.login_button = QPushButton("Iniciar Sesión")
+        self.login_button.clicked.connect(self.accept)
 
         form_layout.addWidget(self.username_input)
         form_layout.addWidget(self.password_input)

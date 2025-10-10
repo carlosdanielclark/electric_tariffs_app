@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QApplication
 
 def test_app_starts(qtbot: QtBot) -> None:
     app = QApplication.instance() or QApplication([])
-    from app.ui.main_window import MainWindow
+    from app.presentation.main_window import MainWindow
     w = MainWindow()
     qtbot.addWidget(w)
     w.show()

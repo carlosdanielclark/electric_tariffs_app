@@ -1,8 +1,9 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QPushButton, QLabel
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal as Signal
+
 
 class ReadingFormWidget(QWidget):
-    reading_submitted = pyqtSignal(float, float)
+    reading_submitted = Signal(float, float)
 
     def __init__(self, previous_reading: float = 0.0) -> None:
         super().__init__()
@@ -17,7 +18,6 @@ class ReadingFormWidget(QWidget):
         self.previous_input = QLineEdit()
         self.previous_input.setText(f"{self.previous_reading:.2f}")
         self.previous_input.setReadOnly(True)
-        self.previous_input.setPlaceholderText("0.00")
 
         self.current_label = QLabel("Lectura Actual")
         self.current_input = QLineEdit()
@@ -40,8 +40,8 @@ class ReadingFormWidget(QWidget):
             current = float(self.current_input.text())
             previous = float(self.previous_input.text())
             if current <= previous:
-                return  # Validación básica; se manejará en ViewModel
+                return
             self.reading_submitted.emit(previous, current)
             self.current_input.clear()
         except ValueError:
-            pass  # Manejo de error en capa superior
+            pass

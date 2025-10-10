@@ -3,12 +3,12 @@ from PyQt6.QtWidgets import (
     QStackedWidget, QLabel, QFrame
 )
 from PyQt6.QtCore import Qt
-from typing import Optional
 from .dashboard_view import DashboardView
 from .history_view import HistoryView
 from .graph_view import GraphView
 from .user_stats_view import UserStatsView
 from ..widgets.reading_form_widget import ReadingFormWidget
+
 
 class MainWindow(QMainWindow):
     def __init__(self, user, reading_service, user_service) -> None:
@@ -26,35 +26,31 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
 
-        # Sidebar
         self.sidebar = self.create_sidebar()
         main_layout.addWidget(self.sidebar, 1)
 
-        # Stacked widget para vistas
         self.stacked_widget = QStackedWidget()
         self.dashboard_view = DashboardView(self.user.id, self.reading_service)
         self.history_view = HistoryView(self.user.id, self.reading_service)
         self.graph_view = GraphView(self.user.id, self.reading_service)
-        self.user_stats_view = UserStatsView(self.user_service)
 
         self.stacked_widget.addWidget(self.dashboard_view)
         self.stacked_widget.addWidget(self.history_view)
         self.stacked_widget.addWidget(self.graph_view)
+
         if self.user.role == "admin":
+            self.user_stats_view = UserStatsView(self.user_service)
             self.stacked_widget.addWidget(self.user_stats_view)
 
         main_layout.addWidget(self.stacked_widget, 4)
-
         self.setCentralWidget(central_widget)
 
-        # Conectar botones
         self.dashboard_btn.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
         self.history_btn.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
         self.graph_btn.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
         if self.user.role == "admin":
             self.stats_btn.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(3))
 
-        # Actualizar formulario de lectura
         self.update_reading_form()
 
     def create_sidebar(self) -> QWidget:
@@ -65,7 +61,7 @@ class MainWindow(QMainWindow):
             font-family: sans-serif;
         """)
         layout = QVBoxLayout(sidebar)
-        layout.setAlignment(Qt.AlignTop)
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         layout.setSpacing(15)
         layout.setContentsMargins(20, 30, 20, 20)
 
@@ -90,7 +86,6 @@ class MainWindow(QMainWindow):
         self.reading_form = ReadingFormWidget()
         self.reading_form.reading_submitted.connect(self.handle_reading_submission)
         layout.addWidget(self.reading_form)
-
         layout.addStretch()
 
         logout_btn = QPushButton("Cerrar sesión")
@@ -114,12 +109,12 @@ class MainWindow(QMainWindow):
             border-radius: 6px;
             font-size: 14px;
         """)
-        btn.setCursor(Qt.PointingHandCursor)
+        btn.setCursor(Qt.CursorShape.PointingHandCursor)
         return btn
 
     def update_reading_form(self) -> None:
         last = self.reading_service.get_last_reading_by_user(self.user.id)
-        prev = last.lectura_actual if last else 0.0
+        prev = float(last.lectura_actual) if last else 0.0
         self.reading_form.previous_input.setText(f"{prev:.2f}")
 
     def handle_reading_submission(self, previous: float, current: float) -> None:
@@ -130,9 +125,8 @@ class MainWindow(QMainWindow):
                 lectura_anterior=previous
             )
             self.update_reading_form()
-            # Refrescar vistas activas
             self.dashboard_view.load_data()
             self.history_view.load_data()
             self.graph_view.load_data()
-        except Exception as e:
-            pass  # Manejo de errores en UI real
+        except Exception:
+            pass

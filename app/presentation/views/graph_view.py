@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas  # OK en PyQt6
 from matplotlib.figure import Figure
 from collections import defaultdict
-from datetime import datetime
+
 
 class GraphView(QWidget):
     def __init__(self, user_id: int, reading_service) -> None:
@@ -28,12 +28,11 @@ class GraphView(QWidget):
             monthly[key]["consumo"] += float(r.consumo)
             monthly[key]["costo"] += float(r.costo)
 
-        # Ordenar por fecha
         sorted_items = sorted(monthly.items())
         if not sorted_items:
             return
 
-        months = [item[0].split("-")[1] for item in sorted_items]  # Solo mes
+        months = [item[0].split("-")[1] for item in sorted_items]
         consumos = [item[1]["consumo"] for item in sorted_items]
         costos = [item[1]["costo"] for item in sorted_items]
 
@@ -41,12 +40,13 @@ class GraphView(QWidget):
         ax = self.figure.add_subplot(111)
         bars = ax.bar(months, consumos, color="#00C8D6")
 
-        # Añadir costo encima de cada barra
         for bar, costo in zip(bars, costos):
             height = bar.get_height()
             ax.text(
-                bar.get_x() + bar.get_width() / 2, height + max(consumos) * 0.01,
-                f"${costo:.2f}", ha='center', va='bottom', fontweight='bold'
+                bar.get_x() + bar.get_width() / 2,
+                height + max(consumos) * 0.01,
+                f"${costo:.2f}",
+                ha='center', va='bottom', fontweight='bold'
             )
 
         ax.set_ylabel("Consumo (kWh)")

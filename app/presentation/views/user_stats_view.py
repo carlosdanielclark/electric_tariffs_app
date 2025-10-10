@@ -1,5 +1,5 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QPushButton, QLabel, QLineEdit, QMessageBox
-from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QPushButton, QLabel, QMessageBox
+
 
 class UserStatsView(QWidget):
     def __init__(self, user_service) -> None:
@@ -11,7 +11,6 @@ class UserStatsView(QWidget):
     def setup_ui(self) -> None:
         layout = QVBoxLayout()
 
-        # Contadores
         self.active_label = QLabel("Usuarios registrados: 0")
         self.deleted_label = QLabel("Usuarios eliminados: 0")
         self.active_label.setStyleSheet("font-size: 16px; font-weight: bold;")
@@ -19,15 +18,12 @@ class UserStatsView(QWidget):
         layout.addWidget(self.active_label)
         layout.addWidget(self.deleted_label)
 
-        # Tabla de usuarios
         self.table = QTableWidget()
         self.table.setColumnCount(4)
         self.table.setHorizontalHeaderLabels(["ID", "Nombre", "Usuario", "Eliminar"])
         self.table.horizontalHeader().setStretchLastSection(True)
         layout.addWidget(self.table)
 
-        # Eliminar por ID/nombre (opcional, aunque se prefiere por tabla)
-        # Se mantiene solo por consistencia con el diseño, pero no se usa si hay botones en tabla
         layout.addStretch()
         self.setLayout(layout)
 
@@ -51,8 +47,8 @@ class UserStatsView(QWidget):
     def delete_user(self, user_id: int) -> None:
         reply = QMessageBox.question(
             self, "Confirmar", "¿Eliminar este usuario y sus datos?",
-            QMessageBox.Yes | QMessageBox.No
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
-        if reply == QMessageBox.Yes:
+        if reply == QMessageBox.StandardButton.Yes:
             self.user_service.delete_user(user_id)
             self.load_data()

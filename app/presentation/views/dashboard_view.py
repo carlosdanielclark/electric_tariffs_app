@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QPushButton, QMessageBox
 from PyQt6.QtCore import Qt
-from decimal import Decimal
+
 
 class DashboardView(QWidget):
     def __init__(self, user_id: int, reading_service) -> None:
@@ -22,7 +22,7 @@ class DashboardView(QWidget):
     def load_data(self) -> None:
         readings = self.reading_service.get_all_readings_by_user(self.user_id)
         self.table.setRowCount(len(readings))
-        for row, r in enumerate(reversed(readings)):  # Últimos primero
+        for row, r in enumerate(reversed(readings)):
             self.table.setItem(row, 0, QTableWidgetItem(r.fecha.strftime("%Y-%m-%d %H:%M")))
             self.table.setItem(row, 1, QTableWidgetItem(f"{r.lectura_actual:.2f}"))
             self.table.setItem(row, 2, QTableWidgetItem(f"{r.consumo:.2f}"))
@@ -36,8 +36,8 @@ class DashboardView(QWidget):
     def delete_reading(self, reading_id: int) -> None:
         reply = QMessageBox.question(
             self, "Confirmar", "¿Eliminar esta lectura?",
-            QMessageBox.Yes | QMessageBox.No
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
-        if reply == QMessageBox.Yes:
+        if reply == QMessageBox.StandardButton.Yes:
             self.reading_service.delete_reading(reading_id)
             self.load_data()
