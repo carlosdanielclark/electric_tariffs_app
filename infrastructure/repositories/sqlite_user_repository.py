@@ -1,9 +1,9 @@
 from __future__ import annotations
 import sqlite3
 from typing import Optional
-from src.domain.entities.user import User
-from src.infrastructure.database.connection import get_db_connection
-from src.config import settings
+from domain.entities.user import User
+from infrastructure.database.connection import get_db_connection
+from config import settings
 
 
 class SQLiteUserRepository:

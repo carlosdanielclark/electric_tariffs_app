@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Optional
-from src.infrastructure.repositories.sqlite_user_repository import SQLiteUserRepository
-from src.domain.entities.user import User
+from infrastructure.repositories.sqlite_user_repository import SQLiteUserRepository
+from domain.entities.user import User
 
 
 def _hash_password(password: str) -> str:

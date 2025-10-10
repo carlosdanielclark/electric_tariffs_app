@@ -1,13 +1,13 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QMessageBox
-from src.presentation.views.login_view import LoginView
-from src.presentation.views.main_window import MainWindow
-from src.infrastructure.database.connection import get_db_connection
-from src.application.services.auth_service import AuthService
-from src.application.services.reading_service import ReadingService
-from src.application.services.user_service import UserService
-from src.infrastructure.logging.activity_logger import ActivityLogger
-from src.infrastructure.database.repositories.user_repository import UserRepository
+from presentation.views.login_view import LoginView
+from presentation.views.main_window import MainWindow
+from infrastructure.database.connection import get_db_connection
+from application.services.auth_service import AuthService
+from application.services.reading_service import ReadingService
+from application.services.user_service import UserService
+from infrastructure.logging.activity_logger import ActivityLogger
+from infrastructure.database.repositories.user_repository import UserRepository
 
 
 def main() -> None:

@@ -3,7 +3,7 @@ from typing import List, Optional
 from domain.entities.reading import Reading
 from infrastructure.database.repositories.reading_repository import ReadingRepository
 from infrastructure.logging.activity_logger import ActivityLogger
-from services.tariff_calculator import TariffCalculator
+from application.services.tariff_calculator import TariffCalculator
 
 
 class ReadingService:

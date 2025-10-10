@@ -1,5 +1,5 @@
 from decimal import Decimal
-from src.application.services.tariff_calculator import TariffCalculator
+from application.services.tariff_calculator import TariffCalculator
 
 def test_tariff_basic() -> None:
     calc = TariffCalculator()
