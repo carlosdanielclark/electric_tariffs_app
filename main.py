@@ -1,6 +1,6 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QMessageBox
-from infrastructure.database.connection import get_db_connection
+from infrastructure.database.connection import init_db, get_db_connection
 from infrastructure.database.repositories.user_repository import UserRepository
 from infrastructure.auth.auth_service import AuthService
 from application.services.reading_service import ReadingService
@@ -10,6 +10,9 @@ from presentation.views.main_window import MainWindow
 
 
 def main() -> None:
+    # ✅ Inicializar base de datos al inicio
+    init_db()
+
     app = QApplication(sys.argv)
     conn = get_db_connection()
 

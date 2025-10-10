@@ -31,7 +31,7 @@ class LoginView(QDialog):
             border: 1px solid #999999;
             border-radius: 8px;
             background: white;
-            color: #333333;               /* ✅ Texto visible */
+            color: #333333;
             selection-background-color: #00C8D6;
             selection-color: white;
         }
@@ -51,10 +51,10 @@ class LoginView(QDialog):
             background-color: white;
             border-radius: 16px;
             padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            /* box-shadow eliminado: no soportado en PyQt6 */
         }
         """
-
+    
     def setup_ui(self) -> None:
         main_layout = QVBoxLayout()
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
