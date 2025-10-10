@@ -1,7 +1,7 @@
 from typing import List
 from domain.entities.user import User
 from infrastructure.database.repositories.user_repository import UserRepository
-from infrastructure.logger.activity_logger import ActivityLogger
+from infrastructure.logging.activity_logger import ActivityLogger
 
 
 class UserService:

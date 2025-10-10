@@ -1,5 +1,5 @@
 import sqlite3
-from app.infrastructure.repositories.sqlite_user_repository import SQLiteUserRepository
+from src.infrastructure.repositories.sqlite_user_repository import SQLiteUserRepository
 
 
 def test_create_tables_in_memory() -> None:  # ← Añadido "-> None"

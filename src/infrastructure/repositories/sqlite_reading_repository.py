@@ -3,9 +3,9 @@ import sqlite3
 from datetime import datetime
 from decimal import Decimal
 from typing import List
-from app.domain.entities.reading import Reading
-from app.infrastructure.database.connection import get_connection
-from app.config import settings
+from src.domain.entities.reading import Reading
+from src.infrastructure.database.connection import get_connection
+from src.config import settings
 
 
 class SQLiteReadingRepository:

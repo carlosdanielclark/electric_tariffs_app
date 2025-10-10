@@ -1,7 +1,7 @@
 import pytest
 import sqlite3
-from app.infrastructure.repositories.sqlite_user_repository import SQLiteUserRepository
-from app.application.services.auth_service import AuthService
+from src.infrastructure.repositories.sqlite_user_repository import SQLiteUserRepository
+from src.application.services.auth_service import AuthService
 
 bcrypt = pytest.importorskip("bcrypt")  # skip tests if bcrypt not installed
 

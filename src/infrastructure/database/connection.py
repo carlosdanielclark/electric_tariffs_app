@@ -4,7 +4,7 @@ from __future__ import annotations
 import sqlite3
 import os
 from pathlib import Path
-from app.config import settings
+from src.config import settings
 from datetime import datetime
 
 SCHEMA_SQL = """

@@ -1,9 +1,9 @@
 import sqlite3
 from decimal import Decimal
-from app.infrastructure.repositories.sqlite_user_repository import SQLiteUserRepository
-from app.infrastructure.repositories.sqlite_reading_repository import SQLiteReadingRepository
-from app.application.services.reading_service import ReadingService, NewReading
-from app.application.services.auth_service import AuthService
+from src.infrastructure.repositories.sqlite_user_repository import SQLiteUserRepository
+from src.infrastructure.repositories.sqlite_reading_repository import SQLiteReadingRepository
+from src.application.services.reading_service import ReadingService, NewReading
+from src.application.services.auth_service import AuthService
 
 def test_record_reading_and_query() -> None:
     conn = sqlite3.connect(":memory:")

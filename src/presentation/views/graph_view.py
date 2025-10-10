@@ -1,7 +1,9 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas  # OK en PyQt6
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from collections import defaultdict
+from typing import List, Dict
+from decimal import Decimal
 
 
 class GraphView(QWidget):
@@ -21,7 +23,7 @@ class GraphView(QWidget):
 
     def load_data(self) -> None:
         readings = self.reading_service.get_all_readings_by_user(self.user_id)
-        monthly = defaultdict(lambda: {"consumo": 0.0, "costo": 0.0})
+        monthly: Dict[str, Dict[str, float]] = defaultdict(lambda: {"consumo": 0.0, "costo": 0.0})
 
         for r in readings:
             key = r.fecha.strftime("%Y-%m")
@@ -30,21 +32,26 @@ class GraphView(QWidget):
 
         sorted_items = sorted(monthly.items())
         if not sorted_items:
+            self.figure.clear()
+            ax = self.figure.add_subplot(111)
+            ax.text(0.5, 0.5, "No hay datos para mostrar", ha='center', va='center', transform=ax.transAxes)
+            self.canvas.draw()
             return
 
-        months = [item[0].split("-")[1] for item in sorted_items]
-        consumos = [item[1]["consumo"] for item in sorted_items]
-        costos = [item[1]["costo"] for item in sorted_items]
+        months: List[str] = [item[0].split("-")[1] for item in sorted_items]
+        consumos: List[float] = [item[1]["consumo"] for item in sorted_items]
+        costos: List[float] = [item[1]["costo"] for item in sorted_items]
 
         self.figure.clear()
         ax = self.figure.add_subplot(111)
         bars = ax.bar(months, consumos, color="#00C8D6")
 
+        max_consumo = max(consumos) if consumos else 0.0
         for bar, costo in zip(bars, costos):
             height = bar.get_height()
             ax.text(
                 bar.get_x() + bar.get_width() / 2,
-                height + max(consumos) * 0.01,
+                height + (max_consumo * 0.01 if max_consumo > 0 else 0.1),
                 f"${costo:.2f}",
                 ha='center', va='bottom', fontweight='bold'
             )
