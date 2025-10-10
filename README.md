@@ -5,7 +5,7 @@ Aplicación de escritorio para registrar lecturas eléctricas, calcular consumo 
 
 ## Tecnología utilizada
 - **Lenguaje**: Python 3.13.x  
-- **Framework GUI**: PyQt (PyQt6 o PyQt5 según compatibilidad)  
+- **Framework GUI**: PyQt (PyQt6 o PyQt6 según compatibilidad)  
 - **Persistencia**: SQLite (módulo builtin sqlite3)  
 - **Seguridad**: bcrypt para hashing de contraseñas  
 - **Empaquetado opcional**: PyInstaller para generar ejecutables  
@@ -60,7 +60,7 @@ Si no existe `requirements.txt`, instalar las dependencias mínimas recomendadas
 ```bash
 pip install pyqt6 bcrypt
 ```
-Nota: si la app fue desarrollada con PyQt5 reemplazar `pyqt6` por `pyqt5`.
+Nota: si la app fue desarrollada con PyQt6 reemplazar `pyqt6` por `PyQt6`.
 
 #### 4. Configurar base de datos inicial (si aplica)
 Si el proyecto incluye scripts de migración o un archivo de inicialización, ejecutarlos:
@@ -89,7 +89,7 @@ La ventana de login debería aparecer. Crear un usuario administrador si se prop
 ---
 
 ## Instalación de dependencias detallada
-- PyQt6 (o PyQt5) para la interfaz gráfica:
+- PyQt6 (o PyQt6) para la interfaz gráfica:
   ```bash
   pip install pyqt6
   ```
@@ -117,7 +117,7 @@ El ejecutable resultante aparecerá en `dist/`. Ajustar parámetros de PyInstall
 
 ## Notas y recomendaciones finales 🔐🧭
 - Mantener copia de seguridad de la base de datos SQLite antes de pruebas destructivas.  
-- Verificar compatibilidad PyQt5 vs PyQt6; instalar la que el proyecto requiera.  
+- Verificar compatibilidad PyQt6 vs PyQt6; instalar la que el proyecto requiera.  
 - Revisar y ajustar rutas en `settings.py` para logs y base de datos si la app falla al iniciar.  
 - Para desarrollo, habilitar logging detallado y lanzar la app desde terminal para ver errores.  
 
