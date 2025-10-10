@@ -38,7 +38,7 @@ def main() -> None:
             QMessageBox.warning(login, "Error", "Credenciales inválidas.")
             sys.exit(1)
 
-        if user.role not in ("admin", "usuario"):
+        if user.rol not in ("admin", "usuario"):
             QMessageBox.critical(login, "Error", "Rol de usuario no válido.")
             sys.exit(1)
 

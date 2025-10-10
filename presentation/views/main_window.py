@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.history_view)
         self.stacked_widget.addWidget(self.graph_view)
 
-        if self.user.role == "admin":
+        if self.user.rol == "admin":
             self.user_stats_view = UserStatsView(self.user_service)
             self.stacked_widget.addWidget(self.user_stats_view)
 
@@ -48,7 +48,7 @@ class MainWindow(QMainWindow):
         self.dashboard_btn.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
         self.history_btn.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
         self.graph_btn.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
-        if self.user.role == "admin":
+        if self.user.rol == "admin":
             self.stats_btn.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(3))
 
         self.update_reading_form()
@@ -76,7 +76,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.history_btn)
         layout.addWidget(self.graph_btn)
 
-        if self.user.role == "admin":
+        if self.user.rol == "admin":
             self.stats_btn = self.create_menu_button("Estadísticas de usuarios")
             layout.addWidget(self.stats_btn)
 

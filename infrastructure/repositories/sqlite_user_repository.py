@@ -57,7 +57,7 @@ class SQLiteUserRepository:
                 name=name,
                 username=username,
                 password_hash=password_hash,
-                role=role,
+                rol=role,
                 active=True,
             )
         except sqlite3.IntegrityError as e:
