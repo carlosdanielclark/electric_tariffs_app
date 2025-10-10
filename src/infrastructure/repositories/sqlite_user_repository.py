@@ -2,7 +2,7 @@ from __future__ import annotations
 import sqlite3
 from typing import Optional
 from src.domain.entities.user import User
-from src.infrastructure.database.connection import get_connection
+from src.infrastructure.database.connection import get_db_connection
 from src.config import settings
 
 
@@ -18,7 +18,7 @@ class SQLiteUserRepository:
     def _get_conn(self) -> sqlite3.Connection:
         if self._conn is not None:
             return self._conn
-        return get_connection(self._db_path)
+        return get_db_connection(self._db_path)
 
     def create_tables(self) -> None:
         """Crear tablas (usa el script de connection.init_db si se quiere)."""

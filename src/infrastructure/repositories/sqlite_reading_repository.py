@@ -4,7 +4,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import List
 from src.domain.entities.reading import Reading
-from src.infrastructure.database.connection import get_connection
+from src.infrastructure.database.connection import get_db_connection
 from src.config import settings
 
 
@@ -16,7 +16,7 @@ class SQLiteReadingRepository:
     def _get_conn(self) -> sqlite3.Connection:
         if self._conn is not None:
             return self._conn
-        return get_connection(self._db_path)
+        return get_db_connection(self._db_path)
 
     def create_tables(self) -> None:
         conn = self._get_conn()

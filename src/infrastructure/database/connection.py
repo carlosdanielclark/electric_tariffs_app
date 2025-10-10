@@ -5,7 +5,7 @@ import sqlite3
 import os
 from pathlib import Path
 from src.config import settings
-from datetime import datetime
+
 
 SCHEMA_SQL = """
 PRAGMA foreign_keys = ON;
@@ -39,7 +39,7 @@ CREATE INDEX IF NOT EXISTS idx_lecturas_fecha ON lecturas(fecha);
 """
 
 
-def get_connection(db_path: str | None = None) -> sqlite3.Connection:
+def get_db_connection(db_path: str | None = None) -> sqlite3.Connection:
     """Retorna una conexión SQLite. Crea directorio si hace falta."""
     db_path = db_path or settings.DB_PATH
     db_file = Path(db_path)
@@ -51,7 +51,7 @@ def get_connection(db_path: str | None = None) -> sqlite3.Connection:
 
 def init_db(db_path: str | None = None) -> None:
     """Inicializa la base de datos creando las tablas necesarias."""
-    conn = get_connection(db_path)
+    conn = get_db_connection(db_path)
     try:
         cursor = conn.cursor()
         cursor.executescript(SCHEMA_SQL)
